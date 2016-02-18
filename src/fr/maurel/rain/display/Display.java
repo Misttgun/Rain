@@ -22,8 +22,8 @@ public class Display {
 	private Canvas canvas;
 
 	private String title;
-	private int width;
-	private int height;
+	private int width = Game.width * Game.scale;
+	private int height = Game.height * Game.scale;
 
 	/**
 	 * Display constructor.
@@ -46,7 +46,7 @@ public class Display {
 	private void createDisplay() {
 		// Creation of the frame
 		frame = new JFrame(title);
-		frame.setSize(width * Game.scale, height * Game.scale);
+		frame.setSize(width, height);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
@@ -54,12 +54,9 @@ public class Display {
 
 		// Create the canvas
 		canvas = new Canvas();
-		canvas.setPreferredSize(new Dimension(width * Game.scale, height
-				* Game.scale));
-		canvas.setMaximumSize(new Dimension(width * Game.scale, height
-				* Game.scale));
-		canvas.setMinimumSize(new Dimension(width * Game.scale, height
-				* Game.scale));
+		canvas.setPreferredSize(new Dimension(width, height));
+		canvas.setMaximumSize(new Dimension(width, height));
+		canvas.setMinimumSize(new Dimension(width, height));
 		canvas.setFocusable(false);
 
 		// Add the canvas to the frame
@@ -81,6 +78,20 @@ public class Display {
 	 */
 	public Canvas getCanvas() {
 		return canvas;
+	}
+
+	/**
+	 * @return the width
+	 */
+	public int getWidth() {
+		return width;
+	}
+
+	/**
+	 * @return the height
+	 */
+	public int getHeight() {
+		return height;
 	}
 
 }
