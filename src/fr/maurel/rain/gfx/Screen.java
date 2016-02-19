@@ -3,6 +3,8 @@
  */
 package fr.maurel.rain.gfx;
 
+import java.util.Random;
+
 /**
  * Class which define and manage the screen of the game. The class diplays the
  * pixels of the game.
@@ -16,6 +18,10 @@ public class Screen {
 	private int height;
 	public int[] pixels;
 
+	public int[] tiles = new int[64 * 64];
+
+	private Random random = new Random();
+
 	/**
 	 * Constructor of the screen.
 	 * 
@@ -26,15 +32,24 @@ public class Screen {
 		this.width = width;
 		this.height = height;
 		pixels = new int[width * height];
+
+		for (int i = 0; i < tiles.length; i++) {
+			tiles[i] = random.nextInt(0xffffff);
+		}
 	}
 
 	/**
 	 * Method which renders the screen.
 	 */
-	public void render() {
+	public void render(int xOffset, int yOffset) {
 		for (int y = 0; y < height; y++) {
+			int yy = y + yOffset;
+			//if (yy < 0 || yy >= height) break;
 			for (int x = 0; x < width; x++) {
-				pixels[x + y * width] = 0xff00ff;
+				int xx = x + xOffset;
+				//if (xx < 0 || xx >= width) break;
+				int tileIndex = ((xx >> 4) & 63) + ((yy >> 4) & 63) * 64;
+				pixels[x + y * width] = tiles[tileIndex];
 			}
 		}
 	}

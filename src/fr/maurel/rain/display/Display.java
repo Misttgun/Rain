@@ -22,8 +22,8 @@ public class Display {
 	private Canvas canvas;
 
 	private String title;
-	private int width = Game.width * Game.scale;
-	private int height = Game.height * Game.scale;
+	private int width = Game.WIDTH * Game.scale;
+	private int height = Game.HEIGHT * Game.scale;
 
 	/**
 	 * Display constructor.

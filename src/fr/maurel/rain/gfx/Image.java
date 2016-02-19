@@ -16,7 +16,7 @@ import fr.maurel.rain.Game;
  */
 public class Image {
 
-	private BufferedImage image = new BufferedImage(Game.width, Game.height,
+	private BufferedImage image = new BufferedImage(Game.WIDTH, Game.HEIGHT,
 			BufferedImage.TYPE_INT_RGB);
 	/**
 	 * Converting our image in an array of pixels.

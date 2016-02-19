@@ -9,6 +9,7 @@ import java.awt.image.BufferStrategy;
 import fr.maurel.rain.display.Display;
 import fr.maurel.rain.gfx.Image;
 import fr.maurel.rain.gfx.Screen;
+import fr.maurel.rain.input.KeyManager;
 
 /**
  * The main class of the game.
@@ -19,12 +20,15 @@ import fr.maurel.rain.gfx.Screen;
 public class Game implements Runnable {
 
 	// Screen size
-	public static int width = 800 / 3;
-	public static int height = width * 9 / 16;
+	public static int WIDTH = 800 / 3;
+	public static int HEIGHT = WIDTH * 9 / 16;
 	public static int scale = 3;
+
+	private static String TITLE = "Rain";
 	private Display display;
 
 	private Thread thread;
+	private KeyManager keyboard;
 	private boolean running = false;
 
 	private BufferStrategy bs;
@@ -44,8 +48,11 @@ public class Game implements Runnable {
 	 * states, etc.
 	 */
 	private void init() {
-		screen = new Screen(width, height);
-		display = new Display("Rain", width * scale, height * scale);
+		screen = new Screen(WIDTH, HEIGHT);
+		display = new Display(TITLE, WIDTH * scale, HEIGHT * scale);
+
+		keyboard = new KeyManager();
+		display.getFrame().addKeyListener(keyboard);
 	}
 
 	/**
@@ -75,17 +82,58 @@ public class Game implements Runnable {
 
 	public void run() {
 		init();
+
+		// Number of times we want to update per secondes.
+		final int fps = 60;
+
+		// Max time in nanoseconds to update and render.
+		final double timePerTick = 1000000000 / fps;
+
+		// Requisite time before an update and render.
+		double delta = 0;
+
+		// Current clock of the computer in nanoseconds.
+		long now;
+
+		// Clock of the computer in nanoseconds on the last loop statement.
+		long lastTime = System.nanoTime();
+
+		long timer = 0;
+		int ticks = 0;
 		while (running) {
-			update();
-			render();
+			now = System.nanoTime();
+			delta += (now - lastTime) / timePerTick;
+			timer += now - lastTime;
+			lastTime = now;
+
+			if (delta >= 1) {
+				update();
+				render();
+				ticks++;
+				delta--;
+			}
+
+			if (timer >= 1000000000) {
+				display.getFrame().setTitle(TITLE + " | " + ticks + " Ticks");
+				ticks = 0;
+				timer = 0;
+			}
 		}
+
+		stop();
 	}
+
+	int x = 0, y = 0;
 
 	/**
 	 * Method which updates the game while it's running.
 	 */
 	public void update() {
-
+		keyboard.update();
+		if (keyboard.up) y--;
+		if (keyboard.down) y++;
+		if (keyboard.left) x--;
+		if (keyboard.right) x++;
 	}
 
 	/**
@@ -98,13 +146,13 @@ public class Game implements Runnable {
 			display.getCanvas().createBufferStrategy(3);
 			return;
 		}
-		
+
 		// Clearing my screen
 		screen.clear();
-		
+
 		// Rendering my screen.
-		screen.render();
-		for(int i=0;i<image.getPixels().length;i++){
+		screen.render(x, y);
+		for (int i = 0; i < image.getPixels().length; i++) {
 			image.getPixels()[i] = screen.pixels[i];
 		}
 
